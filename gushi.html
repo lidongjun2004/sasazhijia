@@ -1,35 +1,669 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<title>大事记</title>
-<link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大事记 - 萨萨之家</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f3cbf8 0%, #e9b4f2 50%, #d89ef0 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* 背景装饰元素 */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.2) 1px, transparent 2px),
+                radial-gradient(circle at 90% 40%, rgba(255, 255, 255, 0.2) 2px, transparent 3px),
+                radial-gradient(circle at 30% 70%, rgba(255, 255, 255, 0.2) 1px, transparent 2px),
+                radial-gradient(circle at 70% 10%, rgba(255, 255, 255, 0.2) 1px, transparent 2px),
+                radial-gradient(circle at 50% 85%, rgba(255, 255, 255, 0.2) 1px, transparent 2px);
+            background-size: 200px 200px;
+            opacity: 0.4;
+            z-index: -1;
+        }
+        
+        #page {
+            max-width: 1200px;
+            width: 95%;
+            margin: 40px auto;
+            padding: 30px;
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(138, 43, 226, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        /* 标题样式 */
+        .title {
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .title h1 {
+            color: #8A2BE2;
+            font-size: 4rem;
+            text-shadow: 3px 3px 0 rgba(138, 43, 226, 0.2);
+            letter-spacing: 2px;
+            position: relative;
+            display: inline-block;
+            animation: floatTitle 3s ease-in-out infinite;
+        }
+        
+        .title h1::after {
+            content: "🐾";
+            position: absolute;
+            right: -45px;
+            top: -20px;
+            font-size: 3rem;
+            animation: bounce 2s infinite;
+        }
+        
+        .title h1::before {
+            content: "🐾";
+            position: absolute;
+            left: -45px;
+            bottom: -20px;
+            font-size: 3rem;
+            animation: bounce 2s infinite 0.5s;
+        }
+        
+        /* 介绍文字样式 */
+        .intro {
+            text-align: center;
+            color: #8A2BE2;
+            font-size: 2.2rem;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 8px 20px rgba(138, 43, 226, 0.15);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .intro:hover {
+            transform: translateY(-5px);
+        }
+        
+        .intro::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #d09aff, #b57aff, #8A2BE2);
+        }
+        
+        /* 时间线样式 */
+        .timeline-container {
+            max-width: 800px;
+            margin: 40px auto;
+            position: relative;
+            padding: 20px 0;
+        }
+        
+        .timeline-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 6px;
+            background: linear-gradient(to bottom, #b57aff, #8A2BE2, #d09aff);
+            border-radius: 3px;
+            transform: translateX(-50%);
+        }
+        
+        /* 时间线项 */
+        .timeline-item {
+            position: relative;
+            margin-bottom: 40px;
+            width: 50%;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.2);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.6s forwards;
+        }
+        
+        .timeline-item:nth-child(odd) {
+            left: 0;
+        }
+        
+        .timeline-item:nth-child(even) {
+            left: 50%;
+        }
+        
+        .timeline-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(138, 43, 226, 0.3);
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+            top: 30px;
+            width: 20px;
+            height: 20px;
+            background: #8A2BE2;
+            border-radius: 50%;
+            box-shadow: 0 0 0 5px rgba(138, 43, 226, 0.2);
+        }
+        
+        .timeline-item:nth-child(odd)::before {
+            right: -40px;
+        }
+        
+        .timeline-item:nth-child(even)::before {
+            left: -40px;
+        }
+        
+        .timeline-date {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #5a0fb9;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .timeline-date::before {
+            content: "📅";
+            margin-right: 10px;
+            font-size: 1.8rem;
+        }
+        
+        .timeline-content {
+            font-size: 1.8rem;
+            color: #8A2BE2;
+            line-height: 1.5;
+        }
+        
+        /* 返回按钮样式 */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(45deg, #d09aff, #b57aff);
+            padding: 12px 25px;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-decoration: none;
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 20;
+        }
+        
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(138, 43, 226, 0.4);
+        }
+        
+        /* 狗狗插画容器 */
+        .dogs-container {
+            display: flex;
+            justify-content: center;
+            gap: 100px;
+            margin-top: 50px;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .dog {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.3);
+            animation: float 6s ease-in-out infinite;
+            overflow: hidden;
+            z-index: 10;
+        }
+        
+        .dog-daidai {
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.3) 0%, rgba(138, 43, 226, 0.3) 100%);
+            border: 5px solid rgba(138, 43, 226, 0.3);
+        }
+        
+        .dog-shasha {
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.3) 0%, rgba(138, 43, 226, 0.3) 100%);
+            border: 5px solid rgba(138, 43, 226, 0.3);
+            filter: drop-shadow(0 0 8px rgba(138, 43, 226, 0.3));
+        }
+        
+        .dog-daidai::before {
+            content: "🐕";
+            font-size: 7rem;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
+        }
+        
+        .dog-shasha::before {
+            content: "🐩";
+            font-size: 7rem;
+            filter: brightness(3) drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.1));
+        }
+        
+        .dog-name {
+            position: absolute;
+            bottom: -30px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #5a0fb9;
+            text-shadow: 0 2px 4px rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.6);
+            padding: 5px 15px;
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            z-index: 11;
+        }
+        
+        /* 动画效果 */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes floatTitle {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ff6b6b;
+            transform: rotate(45deg);
+            animation: floatHeart 8s linear forwards;
+            z-index: 0;
+        }
+        
+        .heart::before,
+        .heart::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ff6b6b;
+            border-radius: 50%;
+        }
+        
+        .heart::before {
+            top: -10px;
+            left: 0;
+        }
+        
+        .heart::after {
+            top: 0;
+            left: -10px;
+        }
+        
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(100vh) rotate(45deg) scale(0);
+                opacity: 0.8;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(45deg) scale(1.5);
+                opacity: 0;
+            }
+        }
+        
+        /* 照片弹出效果 */
+        .photo-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .photo-popup.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .popup-content {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(138, 43, 226, 0.7);
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+        
+        .photo-popup.active .popup-content {
+            transform: scale(1);
+        }
+        
+        .popup-content img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .close-popup {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 3rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .close-popup:hover {
+            transform: rotate(90deg);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 900px) {
+            .title h1 {
+                font-size: 3.5rem;
+            }
+            
+            .intro {
+                font-size: 1.8rem;
+            }
+            
+            .timeline-container::before {
+                left: 30px;
+            }
+            
+            .timeline-item {
+                width: calc(100% - 60px);
+                left: 0 !important;
+                margin-left: 60px;
+            }
+            
+            .timeline-item::before {
+                left: -40px !important;
+            }
+            
+            .dogs-container {
+                gap: 50px;
+            }
+            
+            .dog {
+                width: 140px;
+                height: 140px;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .title h1 {
+                font-size: 2.8rem;
+            }
+            
+            .title h1::after, 
+            .title h1::before {
+                display: none;
+            }
+            
+            .intro {
+                font-size: 1.6rem;
+                padding: 20px 15px;
+            }
+            
+            .timeline-date {
+                font-size: 1.4rem;
+            }
+            
+            .timeline-content {
+                font-size: 1.6rem;
+            }
+            
+            .dogs-container {
+                gap: 20px;
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .dog {
+                width: 160px;
+                height: 160px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="title">
-        <h1>大事记</h1>
+    <div id="page">
+        <!-- 返回首页按钮 -->
+        <a href="index.html" class="back-button">
+            <i class="fas fa-arrow-left"></i> 返回首页
+        </a>
+        
+        <div class="title">
+            <h1>大事记</h1>
+        </div>
+        
+        <div class="intro">
+            <p>欢迎来到大事记！<br>这里记录了两只萨萨的温暖回忆~<br>点击事件卡片有惊喜哦！（暂时还没有）</p>
+        </div>
+        
+        <!-- 时间线容器 -->
+        <div class="timeline-container" id="timeline">
+            <!-- 时间线项将通过JS动态添加 -->
+        </div>
+        
+        <!-- 狗狗形象 -->
+        <div class="dogs-container">
+            <div class="dog dog-daidai">
+            </div>
+            <div class="dog dog-shasha">
+            </div>
+        </div>
+        
+        <!-- 照片弹出层 -->
+        <div class="photo-popup" id="photoPopup">
+            <div class="close-popup">&times;</div>
+            <div class="popup-content">
+                <img src="" alt="回忆照片" id="popupImage">
+            </div>
+        </div>
     </div>
-    <div class="intro"><p>欢迎来到大事记！这里记录了两只萨萨的温暖回忆，记得点击，有惊喜哦！</p></div>
-    <div class="list">
-        <div class="date"><a class="date" href="pic1.html">2022.9.3第一次坐同桌</a></div>
-        <div class="date"><a class="date" href="pic1.html">2023.4.5傻傻喜欢乖乖了呢</a></div>
-        <div class="date"><a class="date" href="pic1.html">2023.5.20初牵、初拥、初吻+在一起啦！！！</a></div>
-        <div class="date"><a class="date" href="pic1.html">2023.6.10高考结束</a></div>
-        <div class="date"><a class="date" href="pic1.html">2023.6.11毕业照+纪念日！</a></div>
-        <div class="date"><a class="date" href="pic1.html">2023.6.12欢乐谷</a></div>
-        <div class="date"><a class="date" href="pic1.html">2023.6.13福尔摩斯展+探访大萨萨的老师们</a></div>
-        <div class="date"><a class="date" href="pic1.html">2023.6.14看电影+探访小萨的老师们</a></div>
-        <div class="date"><a class="date" href="pic1.html">2023.6.19蹦床馆</a></div>
-        <div class="date"><a class="date" href="pic1.html">2023.6.20毕业典礼</a></div>
-        <div class="date"><a class="date" href="pic1.html">2023.6.21逛华熙</a></div>
-        <div class="date"><a class="date" href="pic1.html">2023.8.24-2023.8.26成都之行</a></div>
-        <div class="date"><a class="date" href="pic1.html">2023.8.28小萨萨开学啦</a></div>
-        <div class="date"><a class="date" href="pic1.html">2023.8.30-9.10大萨萨军训</a></div>
-        <div class="date"><a class="date" href="pic1.html">2023.9.27大萨萨生日</a></div>
-        <div class="date"><a class="date" href="pic1.html">2023.10.22第一顿蓝波屋</a></div>
-        <div class="date"><a class="date" href="pic1.html">2023.10.25大萨萨去法大偷偷找小萨</a></div>
-        <div class="date"><a class="date" href="pic1.html">2023.11.19大萨萨看小萨萨西装工作</a></div>
-        <div class="date"><a class="date" href="pic1.html">2023.12.21小萨萨的生日！！！</a></div>
-    </div>
+
+    <script>
+        // 大事记数据
+        const events = [
+            { date: "2022.9.3", content: "第一次坐同桌" },
+            { date: "2023.4.5", content: "傻傻喜欢乖乖了呢" },
+            { date: "2023.5.20", content: "初牵、初拥、初吻+在一起啦！！！" },
+            { date: "2023.6.10", content: "高考结束" },
+            { date: "2023.6.11", content: "毕业照+纪念日！" },
+            { date: "2023.6.12", content: "欢乐谷" },
+            { date: "2023.6.13", content: "福尔摩斯展+探访大萨萨的老师们" },
+            { date: "2023.6.14", content: "看电影+探访小萨的老师们" },
+            { date: "2023.6.19", content: "蹦床馆" },
+            { date: "2023.6.20", content: "毕业典礼" },
+            { date: "2023.6.21", content: "逛华熙" },
+            { date: "2023.8.24-2023.8.26", content: "成都之行" },
+            { date: "2023.8.28", content: "小萨萨开学啦" },
+            { date: "2023.8.30-9.10", content: "大萨萨军训" },
+            { date: "2023.9.27", content: "大萨萨生日" },
+            { date: "2023.10.22", content: "第一顿蓝波屋" },
+            { date: "2023.10.25", content: "大萨萨去法大偷偷找小萨" },
+            { date: "2023.11.19", content: "大萨萨看小萨萨西装工作" },
+            { date: "2023.12.21", content: "小萨萨的生日！！！" },
+            { date: "2023.12.31", content: "看一闪一闪亮星星！" },
+            { date: "2024.1.11", content: "一起做小蛋糕" },
+            { date: "2024.1.31", content: "朱莉小姐" },
+            { date: "2024.2.6", content: "第一次给老婆做饭吃" },
+            { date: "2024.2.18", content: "完美犯罪" },
+            { date: "2024.2.20", content: "朝阳大悦城展览+电玩城" },
+            { date: "2024.2.29", content: "在沙航的最后一顿大餐" },
+            { date: "2024.3.2-3.3", content: "八达岭泡温泉" },
+            { date: "2024.3.10", content: "切西娅" },
+            { date: "2024.4.4", content: "华宇突袭yjf" },
+            { date: "2024.4.20", content: "赏花花" },
+            { date: "2024.4.21", content: "北体大打比赛" },
+            { date: "2024.4.28", content: "天津游" },
+            { date: "2024.5.16", content: "威海游" },
+            { date: "2024.5.21", content: "五月天演唱会" },
+            { date: "2024.6.11", content: "一周年！！！" },
+            { date: "2024.6.29", content: "第一次盲盒" },
+            { date: "2024.7.8", content: "小萨萨军训合唱" },
+            { date: "2024.7.11", content: "大萨萨第一次住院" },
+            { date: "2024.7.16", content: "小萨萨实习，大萨萨陪读" },
+            { date: "2024.7.20", content: "落凡尘" },
+            { date: "2024.7.23", content: "超级合生汇" },
+            { date: "2024.7.28", content: "默杀" },
+            { date: "2024.8.10", content: "白蛇：浮生" },
+            { date: "2024.8.15", content: "情侣耳机壳" },
+            { date: "2024.9.27", content: "大萨萨20岁啦！" },
+            { date: "2024.10.7", content: "西城逛吃逛吃" },
+            { date: "2024.10.23", content: "500天！" },
+            { date: "2024.11.24", content: "小萨萨羽毛球备考" },
+            { date: "2024.12.8", content: "第一次一起看话剧！" },
+            { date: "2024.12.13", content: "大萨萨的雅思之旅" },
+            { date: "2024.12.21", content: "小萨萨也20岁啦！" },
+            { date: "2024.12.24", content: "小萨萨的雅思之旅" },
+            { date: "2025.1.12", content: "小骏出生！" },
+            { date: "2025.1.19", content: "第一次集体剧本杀！" },
+            { date: "2025.2.7", content: "入驻萝萝村" },
+            { date: "2025.2.12", content: "611天！" },
+            { date: "2025.2.14", content: "情人节！" },
+            { date: "2025.2.15-2.21", content: "第一次香港游！！！" },
+            { date: "2025.3.3", content: "自行车换新" },
+            { date: "2025.4.23", content: "入坑EP" },
+            { date: "2025.5.4", content: "潭柘寺" },
+            { date: "2025.5.11", content: "700天！" },
+            { date: "2025.5.20", content: "第三个520！" },
+            { date: "2025.6.11", content: "2周年啦！！！" }
+        ];
+        
+        // 随机照片库
+        const photoLibrary = [
+            'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?q=80&w=800&auto=format&fit=crop',
+            'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=80&w=800&auto=format&fit=crop',
+            'https://images.unsplash.com/photo-1507146426996-ef05306b995a?q=80&w=800&auto=format&fit=crop',
+            'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?q=80&w=800&auto=format&fit=crop',
+            'https://images.unsplash.com/photo-1551269901-5c5e14c25df7?q=80&w=800&auto=format&fit=crop',
+            'https://images.unsplash.com/photo-1561037404-61cd46aa615b?q=80&w=800&auto=format&fit=crop'
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const timeline = document.getElementById('timeline');
+            
+            // 创建时间线项
+            events.forEach((event, index) => {
+                const item = document.createElement('div');
+                item.className = 'timeline-item';
+                item.style.animationDelay = `${index * 0.1}s`;
+                
+                const date = document.createElement('div');
+                date.className = 'timeline-date';
+                date.textContent = event.date;
+                
+                const content = document.createElement('div');
+                content.className = 'timeline-content';
+                content.textContent = event.content;
+                
+                item.appendChild(date);
+                item.appendChild(content);
+                timeline.appendChild(item);
+                
+                // 添加点击事件 - 显示随机照片
+                item.addEventListener('click', () => {
+                    const randomPhoto = photoLibrary[Math.floor(Math.random() * photoLibrary.length)];
+                    document.getElementById('popupImage').src = randomPhoto;
+                    document.getElementById('photoPopup').classList.add('active');
+                });
+            });
+            
+            // 关闭照片弹出层
+            document.querySelector('.close-popup').addEventListener('click', () => {
+                document.getElementById('photoPopup').classList.remove('active');
+            });
+            
+            // 添加飘落的心形效果
+            setInterval(createHeart, 500);
+            
+            function createHeart() {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.width = (Math.random() * 20 + 10) + 'px';
+                heart.style.height = (Math.random() * 20 + 10) + 'px';
+                heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                heart.style.opacity = Math.random() * 0.5 + 0.3;
+                heart.style.background = `hsl(${Math.random() * 360}, 100%, 70%)`;
+                document.body.appendChild(heart);
+                
+                setTimeout(() => {
+                    heart.remove();
+                }, 8000);
+            }
+        });
+    </script>
 </body>
 </html>

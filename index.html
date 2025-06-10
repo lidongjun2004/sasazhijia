@@ -1,23 +1,728 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<title>萨萨之家</title>
-<link href="css/style.css" rel="stylesheet" type="text/css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>萨萨之家 - 两周年纪念</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f3cbf8 0%, #e9b4f2 50%, #d89ef0 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* 背景装饰元素 */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.2) 1px, transparent 2px),
+                radial-gradient(circle at 90% 40%, rgba(255, 255, 255, 0.2) 2px, transparent 3px),
+                radial-gradient(circle at 30% 70%, rgba(255, 255, 255, 0.2) 1px, transparent 2px),
+                radial-gradient(circle at 70% 10%, rgba(255, 255, 255, 0.2) 1px, transparent 2px),
+                radial-gradient(circle at 50% 85%, rgba(255, 255, 255, 0.2) 1px, transparent 2px);
+            background-size: 200px 200px;
+            opacity: 0.4;
+            z-index: -1;
+        }
+        
+        #page {
+            max-width: 1200px;
+            width: 95%;
+            margin: 40px auto;
+            padding: 30px;
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(138, 43, 226, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        /* 标题样式 */
+        .title {
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .title h1 {
+            color: #8A2BE2;
+            font-size: 5rem;
+            text-shadow: 3px 3px 0 rgba(138, 43, 226, 0.2);
+            letter-spacing: 2px;
+            position: relative;
+            display: inline-block;
+            animation: floatTitle 3s ease-in-out infinite;
+        }
+        
+        .title h1::after {
+            content: "🐾";
+            position: absolute;
+            right: -45px;
+            top: -20px;
+            font-size: 3rem;
+            animation: bounce 2s infinite;
+        }
+        
+        .title h1::before {
+            content: "🐾";
+            position: absolute;
+            left: -45px;
+            bottom: -20px;
+            font-size: 3rem;
+            animation: bounce 2s infinite 0.5s;
+        }
+        
+        /* 介绍文字样式 */
+        .intro {
+            text-align: center;
+            color: #8A2BE2;
+            font-size: 2.2rem;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 8px 20px rgba(138, 43, 226, 0.15);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .intro:hover {
+            transform: translateY(-5px);
+        }
+        
+        .intro::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #d09aff, #b57aff, #8A2BE2);
+        }
+        
+        /* 计时器样式 */
+        .timer-container {
+            text-align: center;
+            color: #8A2BE2;
+            font-size: 2.2rem;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 8px 20px rgba(138, 43, 226, 0.15);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+        
+        .timer-container:hover {
+            transform: scale(1.02);
+            box-shadow: 0 12px 30px rgba(138, 43, 226, 0.25);
+        }
+        
+        .timer-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #ff9aee, #d09aff, #8A2BE2);
+        }
+        
+        .timer-title {
+            font-size: 2.5rem;
+            margin-bottom: 25px;
+            color: #7019c9;
+            text-shadow: 0 2px 4px rgba(255, 255, 255, 0.5);
+        }
+        
+        .timer {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .timer-item {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 20px 30px;
+            min-width: 180px;
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.2);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+        
+        .timer-item:hover {
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.4);
+        }
+        
+        .timer-value {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #5a0fb9;
+            margin: 10px 0;
+            text-shadow: 0 2px 4px rgba(255, 255, 255, 0.5);
+        }
+        
+        .timer-label {
+            font-size: 1.6rem;
+            color: #8A2BE2;
+        }
+        
+        /* 纪念日文字样式 */
+        .appr {
+            text-align: center;
+            color: #8A2BE2;
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 50px auto;
+            padding: 30px;
+            position: relative;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+            animation: pulse 2s infinite;
+        }
+        
+        .appr::after {
+            content: "❤️";
+            position: absolute;
+            top: -30px;
+            right: 10%;
+            font-size: 2.5rem;
+            animation: heartBeat 1.5s infinite;
+        }
+        
+        .appr::before {
+            content: "❤️";
+            position: absolute;
+            bottom: -30px;
+            left: 10%;
+            font-size: 2.5rem;
+            animation: heartBeat 1.5s infinite 0.5s;
+        }
+        
+        /* 按钮容器 */
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin: 60px 0 40px;
+        }
+        
+        /* 按钮样式 */
+        .button {
+            min-width: 250px;
+            padding: 25px 40px;
+            text-align: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            box-shadow: 0 10px 20px rgba(138, 43, 226, 0.3);
+            border: none;
+            color: white;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        .button1 {
+            background: linear-gradient(45deg, #d09aff, #b57aff);
+        }
+        
+        .button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #b57aff, #8A2BE2);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .button:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(138, 43, 226, 0.4);
+        }
+        
+        .button:hover::before {
+            opacity: 1;
+        }
+        
+        .button a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* 狗狗插画容器 */
+        .dogs-container {
+            display: flex;
+            justify-content: center;
+            gap: 100px;
+            margin-top: 50px;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .dog {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.3);
+            animation: float 6s ease-in-out infinite;
+            overflow: hidden;
+            /* 提高图层层级 */
+            z-index: 10;
+        }
+        
+        .dog-daidai {
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.3) 0%, rgba(138, 43, 226, 0.3) 100%);
+            border: 5px solid rgba(138, 43, 226, 0.3);
+        }
+        
+        /* 贵宾狗图标调整为纯白色 */
+        .dog-shasha {
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.3) 0%, rgba(138, 43, 226, 0.3) 100%);
+            border: 5px solid rgba(138, 43, 226, 0.3);
+            filter: drop-shadow(0 0 8px rgba(138, 43, 226, 0.3));
+        }
+        
+        .dog-daidai::before {
+            content: "🐕";
+            font-size: 7rem;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
+        }
+        
+        .dog-shasha::before {
+            content: "🐩";
+            font-size: 7rem;
+            /* 提高白色图标的亮度 */
+            filter: brightness(3) drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.1));
+        }
+        
+        .dog-name {
+            position: absolute;
+            bottom: -30px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #5a0fb9;
+            text-shadow: 0 2px 4px rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.6);
+            padding: 5px 15px;
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            /* 提高文字图层层级 */
+            z-index: 11;
+        }
+        
+        /* 新增：合照容器 */
+        .photo-section {
+            margin-top: 60px;
+            text-align: center;
+            position: relative;
+            z-index: 5;
+        }
+        
+        .photo-title {
+            font-size: 2.5rem;
+            color: #7019c9;
+            margin-bottom: 25px;
+            text-shadow: 0 2px 4px rgba(255, 255, 255, 0.5);
+        }
+        
+        .photo-frame {
+            max-width: 800px;
+            margin: 0 auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(138, 43, 226, 0.3);
+            border: 5px solid rgba(255, 255, 255, 0.5);
+            position: relative;
+            z-index: 6;
+        }
+        
+        .photo-frame img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+        
+        .photo-frame:hover img {
+            transform: scale(1.03);
+        }
+        
+        /* 动画效果 */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes floatTitle {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.3); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.3); }
+            70% { transform: scale(1); }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 900px) {
+            .title h1 {
+                font-size: 3.5rem;
+            }
+            
+            .appr {
+                font-size: 2.5rem;
+                padding: 20px;
+            }
+            
+            .buttons {
+                gap: 20px;
+            }
+            
+            .button {
+                min-width: 200px;
+                padding: 20px 30px;
+                font-size: 1.5rem;
+            }
+            
+            .dogs-container {
+                gap: 50px;
+            }
+            
+            .dog {
+                width: 140px;
+                height: 140px;
+            }
+            
+            .timer {
+                gap: 20px;
+            }
+            
+            .timer-item {
+                min-width: 150px;
+                padding: 15px 20px;
+            }
+            
+            .timer-value {
+                font-size: 2.8rem;
+            }
+            
+            .photo-title {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .title h1 {
+                font-size: 2.8rem;
+            }
+            
+            .title h1::after, 
+            .title h1::before {
+                display: none;
+            }
+            
+            .intro {
+                font-size: 1.8rem;
+                padding: 20px 15px;
+            }
+            
+            .appr {
+                font-size: 2rem;
+                margin: 30px auto;
+            }
+            
+            .buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .button {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .dogs-container {
+                gap: 20px;
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .dog {
+                width: 160px;
+                height: 160px;
+            }
+            
+            .timer {
+                gap: 15px;
+            }
+            
+            .timer-item {
+                min-width: 130px;
+                padding: 12px 15px;
+            }
+            
+            .timer-value {
+                font-size: 2.5rem;
+            }
+            
+            .timer-label {
+                font-size: 1.4rem;
+            }
+            
+            .photo-title {
+                font-size: 1.8rem;
+            }
+        }
+        
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ff6b6b;
+            transform: rotate(45deg);
+            animation: floatHeart 8s linear forwards;
+            z-index: 0;
+        }
+        
+        .heart::before,
+        .heart::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ff6b6b;
+            border-radius: 50%;
+        }
+        
+        .heart::before {
+            top: -10px;
+            left: 0;
+        }
+        
+        .heart::after {
+            top: 0;
+            left: -10px;
+        }
+        
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(100vh) rotate(45deg) scale(0);
+                opacity: 0.8;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(45deg) scale(1.5);
+                opacity: 0;
+            }
+        }
+    </style>
 </head>
 <body>
     <div id="page">
-    <div class="title">
-        <h1>萨萨之家</h1>
+        <div class="title">
+            <h1>萨萨之家</h1>
+        </div>
+        
+        <div class="intro">
+            <p>欢迎来到萨萨之家，这里是两只快乐的萨摩耶（呆呆和傻傻）共同经营的温馨小家的网站。</p>
+        </div>
+        
+        <div class="timer-container">
+            <div class="timer-title">
+                <i class="fas fa-heart"></i> 我们在一起的时间 <i class="fas fa-heart"></i>
+            </div>
+            <div class="timer">
+                <div class="timer-item">
+                    <div class="timer-value" id="years">0</div>
+                    <div class="timer-label">年</div>
+                </div>
+                <div class="timer-item">
+                    <div class="timer-value" id="months">0</div>
+                    <div class="timer-label">月</div>
+                </div>
+                <div class="timer-item">
+                    <div class="timer-value" id="days">0</div>
+                    <div class="timer-label">天</div>
+                </div>
+                <div class="timer-item">
+                    <div class="timer-value" id="total-days">0</div>
+                    <div class="timer-label">总天数</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="appr">
+            <p>今天是什么日子呀~是我们的两周年纪念日！</p>
+        </div>
+        
+        <div class="buttons">
+            <div class="button button1"><a href="chengyuan.html">家庭成员</a></div>
+            <div class="button button1"><a href="jiagui.html">家规</a></div>
+            <div class="button button1"><a href="gushi.html">大事记</a></div>
+            <div class="button button1"><a href="weilai.html">我们的未来</a></div>
+        </div>
+        
+        <div class="dogs-container">
+            <div class="dog dog-daidai">
+            </div>
+            <div class="dog dog-shasha">
+            </div>
+        </div>
+        
+        <!-- 新增：合照部分 -->
+        <div class="photo-section">
+            <div class="photo-title">
+                <i class="fas fa-camera"></i> 2023.6.11于人大附中 <i class="fas fa-heart"></i>
+            </div>
+            <div class="photo-frame">
+                <img src="images/beijing.jpg" alt="呆呆和傻傻的幸福合照">
+            </div>
+        </div>
     </div>
-    <div class="intro"><p>欢迎来到萨萨之家，这里是两只快乐的萨摩耶（呆呆和傻傻）共同经营的温馨小家的网站。</p></div>
-    <div class="appr"><p>今天是傻傻的生日！让我们祝傻傻<a class="text" href="www.baidu.com">生日快乐！！！</a></p></div>
-    <div class="buttons">
-    <div class="button button1"><a href="chengyuan.html">家庭成员</a></div>
-    <div class="button button1"><a href="jiagui.html">家规</a></div>
-    <div class="button button1"><a href="gushi.html">大事记</a></div>
-    <div class="button button1"><a href="weilai.html">我们的未来</a></div>
-    </div>
-    </div>
+
+    <script>
+        // 添加简单的交互效果
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.button');
+            
+            buttons.forEach(button => {
+                button.addEventListener('mousedown', () => {
+                    button.style.transform = 'translateY(5px) scale(0.95)';
+                });
+                
+                button.addEventListener('mouseup', () => {
+                    button.style.transform = '';
+                });
+                
+                button.addEventListener('mouseleave', () => {
+                    button.style.transform = '';
+                });
+            });
+            
+            // 添加飘落的心形效果
+            setInterval(createHeart, 500);
+            
+            function createHeart() {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.width = (Math.random() * 20 + 10) + 'px';
+                heart.style.height = (Math.random() * 20 + 10) + 'px';
+                heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                heart.style.opacity = Math.random() * 0.5 + 0.3;
+                heart.style.background = `hsl(${Math.random() * 360}, 100%, 70%)`;
+                document.body.appendChild(heart);
+                
+                setTimeout(() => {
+                    heart.remove();
+                }, 8000);
+            }
+            
+            // 计算在一起的时间
+            const startDate = new Date('2023-06-11');
+            
+            function updateTogetherTime() {
+                const now = new Date();
+                
+                // 计算总毫秒数
+                const diff = now - startDate;
+                
+                // 计算总天数
+                const totalDays = Math.floor(diff / (1000 * 60 * 60 * 24));
+                
+                // 计算年、月、日
+                let years = now.getFullYear() - startDate.getFullYear();
+                let months = now.getMonth() - startDate.getMonth();
+                let days = now.getDate() - startDate.getDate();
+                
+                // 调整负值
+                if (days < 0) {
+                    months--;
+                    // 获取上个月的总天数
+                    const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+                    days = lastDayOfMonth - startDate.getDate() + now.getDate();
+                }
+                
+                if (months < 0) {
+                    years--;
+                    months += 12;
+                }
+                
+                // 更新显示
+                document.getElementById('years').textContent = years;
+                document.getElementById('months').textContent = months;
+                document.getElementById('days').textContent = days;
+                document.getElementById('total-days').textContent = totalDays;
+            }
+            
+            // 初始更新
+            updateTogetherTime();
+            // 每秒更新一次
+            setInterval(updateTogetherTime, 1000);
+        });
+    </script>
 </body>
 </html>

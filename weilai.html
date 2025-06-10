@@ -1,24 +1,592 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<title>我们的未来</title>
-<link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我们的未来 - 萨萨之家</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f3cbf8 0%, #e9b4f2 50%, #d89ef0 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* 背景装饰元素 */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.2) 1px, transparent 2px),
+                radial-gradient(circle at 90% 40%, rgba(255, 255, 255, 0.2) 2px, transparent 3px),
+                radial-gradient(circle at 30% 70%, rgba(255, 255, 255, 0.2) 1px, transparent 2px),
+                radial-gradient(circle at 70% 10%, rgba(255, 255, 255, 0.2) 1px, transparent 2px),
+                radial-gradient(circle at 50% 85%, rgba(255, 255, 255, 0.2) 1px, transparent 2px);
+            background-size: 200px 200px;
+            opacity: 0.4;
+            z-index: -1;
+        }
+        
+        #page {
+            max-width: 1200px;
+            width: 95%;
+            margin: 40px auto;
+            padding: 30px;
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(138, 43, 226, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        /* 标题样式 */
+        .title {
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .title h1 {
+            color: #8A2BE2;
+            font-size: 4rem;
+            text-shadow: 3px 3px 0 rgba(138, 43, 226, 0.2);
+            letter-spacing: 2px;
+            position: relative;
+            display: inline-block;
+            animation: floatTitle 3s ease-in-out infinite;
+        }
+        
+        .title h1::after {
+            content: "🐾";
+            position: absolute;
+            right: -45px;
+            top: -20px;
+            font-size: 3rem;
+            animation: bounce 2s infinite;
+        }
+        
+        .title h1::before {
+            content: "🐾";
+            position: absolute;
+            left: -45px;
+            bottom: -20px;
+            font-size: 3rem;
+            animation: bounce 2s infinite 0.5s;
+        }
+        
+        /* 介绍文字样式 */
+        .intro {
+            text-align: center;
+            color: #8A2BE2;
+            font-size: 2.2rem;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 8px 20px rgba(138, 43, 226, 0.15);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .intro:hover {
+            transform: translateY(-5px);
+        }
+        
+        .intro::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #d09aff, #b57aff, #8A2BE2);
+        }
+        
+        /* 梦想卡片样式 */
+        .dream-card {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 35px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 15px 35px rgba(138, 43, 226, 0.2);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.4s ease;
+        }
+        
+        .dream-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(138, 43, 226, 0.3);
+        }
+        
+        .dream-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #ff9aee, #d09aff, #8A2BE2);
+        }
+        
+        .dream-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #7019c9;
+            margin-bottom: 25px;
+            text-shadow: 0 2px 4px rgba(255, 255, 255, 0.5);
+        }
+        
+        .dream-content {
+            font-size: 2rem;
+            color: #8A2BE2;
+            line-height: 1.6;
+            text-align: center;
+            padding: 15px;
+        }
+        
+        .dream-highlight {
+            color: #5a0fb9;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(255, 255, 255, 0.5);
+        }
+        
+        .dream-list {
+            max-width: 700px;
+            margin: 30px auto;
+            padding-left: 30px;
+        }
+        
+        .dream-item {
+            font-size: 1.8rem;
+            color: #8A2BE2;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.1);
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .dream-item:hover {
+            transform: translateX(10px);
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .dream-item::before {
+            content: "✨";
+            font-size: 1.8rem;
+            margin-right: 15px;
+        }
+        
+        /* 返回按钮样式 */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(45deg, #d09aff, #b57aff);
+            padding: 12px 25px;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-decoration: none;
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 20;
+        }
+        
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(138, 43, 226, 0.4);
+        }
+        
+        /* 狗狗插画容器 */
+        .dogs-container {
+            display: flex;
+            justify-content: center;
+            gap: 100px;
+            margin-top: 50px;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .dog {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.3);
+            animation: float 6s ease-in-out infinite;
+            overflow: hidden;
+            z-index: 10;
+        }
+        
+        .dog-daidai {
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.3) 0%, rgba(138, 43, 226, 0.3) 100%);
+            border: 5px solid rgba(138, 43, 226, 0.3);
+        }
+        
+        .dog-shasha {
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.3) 0%, rgba(138, 43, 226, 0.3) 100%);
+            border: 5px solid rgba(138, 43, 226, 0.3);
+            filter: drop-shadow(0 0 8px rgba(138, 43, 226, 0.3));
+        }
+        
+        .dog-daidai::before {
+            content: "🐕";
+            font-size: 7rem;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
+        }
+        
+        .dog-shasha::before {
+            content: "🐩";
+            font-size: 7rem;
+            filter: brightness(3) drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.1));
+        }
+        
+        .dog-name {
+            position: absolute;
+            bottom: -30px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #5a0fb9;
+            text-shadow: 0 2px 4px rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.6);
+            padding: 5px 15px;
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            z-index: 11;
+        }
+        
+        /* 世界地图样式 - 修复部分 */
+        .world-map-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0;
+        }
+        
+        .world-map {
+            max-width: 100%;
+            width: 800px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(138, 43, 226, 0.4);
+            border: 5px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .world-map img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+        
+        .world-map:hover {
+            transform: scale(1.03);
+            box-shadow: 0 20px 40px rgba(138, 43, 226, 0.5);
+        }
+        
+        .map-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(138, 43, 226, 0.1), rgba(138, 43, 226, 0.1));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .world-map:hover .map-overlay {
+            opacity: 1;
+        }
+        
+        .map-text {
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(138, 43, 226, 0.8);
+            text-align: center;
+            padding: 20px;
+        }
+        
+        /* 动画效果 */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes floatTitle {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ff6b6b;
+            transform: rotate(45deg);
+            animation: floatHeart 8s linear forwards;
+            z-index: 0;
+        }
+        
+        .heart::before,
+        .heart::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ff6b6b;
+            border-radius: 50%;
+        }
+        
+        .heart::before {
+            top: -10px;
+            left: 0;
+        }
+        
+        .heart::after {
+            top: 0;
+            left: -10px;
+        }
+        
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(100vh) rotate(45deg) scale(0);
+                opacity: 0.8;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(45deg) scale(1.5);
+                opacity: 0;
+            }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 900px) {
+            .title h1 {
+                font-size: 3.5rem;
+            }
+            
+            .intro, .dream-content {
+                font-size: 1.8rem;
+            }
+            
+            .dream-item {
+                font-size: 1.6rem;
+            }
+            
+            .dogs-container {
+                gap: 50px;
+            }
+            
+            .dog {
+                width: 140px;
+                height: 140px;
+            }
+            
+            .dream-card {
+                padding: 25px;
+            }
+            
+            .world-map {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .title h1 {
+                font-size: 2.8rem;
+            }
+            
+            .title h1::after, 
+            .title h1::before {
+                display: none;
+            }
+            
+            .intro, .dream-content {
+                font-size: 1.6rem;
+                padding: 20px 15px;
+            }
+            
+            .dream-item {
+                font-size: 1.4rem;
+                padding: 12px;
+            }
+            
+            .dogs-container {
+                gap: 20px;
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .dog {
+                width: 160px;
+                height: 160px;
+            }
+            
+            .dream-card {
+                padding: 20px;
+            }
+            
+            .map-text {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="title">
-        <h1>我们的未来</h1>
+    <div id="page">
+        <!-- 返回首页按钮 -->
+        <a href="index.html" class="back-button">
+            <i class="fas fa-arrow-left"></i> 返回首页
+        </a>
+        
+        <div class="title">
+            <h1>我们的未来</h1>
+        </div>
+        
+        <div class="intro">
+            <p>萨萨的家里，怎么能少了梦想呢！我们会有很多很多梦想，我们未来要做很多很多快乐的事情。<br>我们会手牵着手，带着我们的萨萨之家，过幸福的一生！</p>
+        </div>
+        
+        <div class="dream-card">
+            <div class="dream-title">
+                <i class="fas fa-globe-americas"></i> 环游世界计划
+            </div>
+            <div class="dream-content">
+                终极目标：<span class="dream-highlight">40+岁之后，财富自由</span>，傻傻和呆呆要一起环游世界去！！！
+            </div>
+            
+            <!-- 地图容器 - 修复部分 -->
+            <div class="world-map-container">
+                <div class="world-map">
+                    <img src="images/map.jpg" alt="世界地图">
+                    <div class="map-overlay">
+                        <div class="map-text">萨萨之家环球之旅 ✈️</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dream-card">
+            <div class="dream-title">
+                <i class="fas fa-heart"></i> 我们的旅游清单
+            </div>
+            
+            <div class="dream-list">
+                <div class="dream-item">去东北看天池，吃东北菜</div>
+                <div class="dream-item">在内蒙古大草原看羊群，看狼群</div>
+                <div class="dream-item">去武汉吃热干面，吃三鲜豆皮</div>
+                <div class="dream-item">去澳门威尼斯人赌博</div>
+                <div class="dream-item">去香港漫步在街头，吃牛气、香格里拉</div>
+                <div class="dream-item">去威海坐在沙滩上看海，去吃海鲜</div>
+                <div class="dream-item">去厦门看风景</div>
+                <div class="dream-item">去云南吃美食，赏风景</div>
+            </div>
+        </div>
+        
+        <div class="dream-card">
+            <div class="dream-title">
+                <i class="fas fa-home"></i> 搞钱计划
+            </div>
+            <div class="dream-content">
+                在<span class="dream-highlight">30岁前</span>实现人均年入百万的目标！<br>赚到40多岁退休，然后环游世界！
+            </div>
+        </div>
+        
+        <div class="dream-card">
+            <div class="dream-title">
+                <i class="fas fa-paw"></i> 狗狗之家
+            </div>
+            <div class="dream-content">
+                萨萨之家未来也想养一只耶耶！<br>让它和小骏和旺仔做朋友！
+            </div>
+        </div>
+        
+        <div class="dogs-container">
+            <div class="dog dog-daidai">
+            </div>
+            <div class="dog dog-shasha">
+            </div>
+        </div>
     </div>
-    <div class="intro"><p>萨萨的家里，怎么能少了梦想呢！我们会有很多很多梦想，我们未来要做很多很多快乐的事情。<br>我们会手牵着手，带着我们的萨萨之家，过幸福的一生！</p></div>
-    <div class="ultra">终极目标：40+岁之后，财富自由，傻傻和呆呆要一起环游世界去！！！</div>
-    <div class="travel">
-        <div class="title1">旅行</div>
-    </div>
-    <div class="career">
-        <div class="title1">旅行</div>
-    </div>
-    <div class="wish">
-        <div class="title1">旅行</div>
-    </div>
+
+    <script>
+        // 添加简单的交互效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 添加飘落的心形效果
+            setInterval(createHeart, 500);
+            
+            function createHeart() {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.width = (Math.random() * 20 + 10) + 'px';
+                heart.style.height = (Math.random() * 20 + 10) + 'px';
+                heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                heart.style.opacity = Math.random() * 0.5 + 0.3;
+                heart.style.background = `hsl(${Math.random() * 360}, 100%, 70%)`;
+                document.body.appendChild(heart);
+                
+                setTimeout(() => {
+                    heart.remove();
+                }, 8000);
+            }
+            
+            // 为梦想清单项添加动画
+            const dreamItems = document.querySelectorAll('.dream-item');
+            dreamItems.forEach((item, index) => {
+                item.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+    </script>
 </body>
 </html>
